@@ -1,0 +1,60 @@
+stages:
+  - setup
+  - test
+
+image: cypress/base:10
+
+variables:
+  CYPRESS_CACHE_FOLDER: $CI_PROJECT_DIR/cache/cypress
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+
+  paths:
+    - .next
+    - .yarn
+    - cache/cypress
+    - node_modules
+
+build:
+  stage: setup
+
+  script:
+    - yarn install
+    - yarn build
+
+typescript:
+  stage: test
+
+  script:
+    - yarn tsc
+
+unit:
+  stage: test
+
+  script:
+    - yarn unit:ci
+
+  artifacts:
+    when: always
+
+    reports:
+      junit: test_reports/jest-junit.xml
+
+e2e:
+  stage: test
+
+  script:
+    - $(yarn bin)/cypress cache path
+    - $(yarn bin)/cypress cache list
+    - $(yarn bin)/cypress verify
+    - yarn start & yarn e2e
+
+  artifacts:
+    when: always
+
+    paths:
+      - cypress/screenshots
+
+    reports:
+      junit: test_reports/cypress.xml
