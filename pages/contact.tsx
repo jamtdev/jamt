@@ -11,7 +11,6 @@ const ContactPage = () => (
     <Text variant="section-title" style={{ marginBottom: spacing.BASE_4 }}>
       Get in touch
     </Text>
-
     <ContactItem icon="linkedin">
       <Text>
         Connect with me on{' '}
